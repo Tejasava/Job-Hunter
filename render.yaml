@@ -1,0 +1,54 @@
+services:
+  - type: web
+    name: job-hunter-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: PORT
+        value: 8000
+      - key: BOT_TOKEN
+        fromDatabase:
+          name: job_hunter
+          property: bot_token
+      - key: MONGODB_URI
+        fromDatabase:
+          name: job_hunter
+          property: mongodb_uri
+      - key: GEMINI_API_KEY
+        fromDatabase:
+          name: job_hunter
+          property: gemini_api_key
+      - key: GROQ_API_KEY
+        fromDatabase:
+          name: job_hunter
+          property: groq_api_key
+
+  - type: background
+    name: job-hunter-bot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot_main.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: BOT_TOKEN
+        fromDatabase:
+          name: job_hunter
+          property: bot_token
+      - key: MONGODB_URI
+        fromDatabase:
+          name: job_hunter
+          property: mongodb_uri
+      - key: GEMINI_API_KEY
+        fromDatabase:
+          name: job_hunter
+          property: gemini_api_key
+      - key: GROQ_API_KEY
+        fromDatabase:
+          name: job_hunter
+          property: groq_api_key
